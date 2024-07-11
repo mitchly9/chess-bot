@@ -491,7 +491,15 @@ export function showQueenMoves(
   );
 }
 
-export function castleKing(setBoardState, castleType, isWhite) {
+export function castleKing(
+  setBoardState,
+  castleType,
+  isWhite,
+  setSelectedTile
+) {
+  setSelectedTile("");
+  setPossibleMoves([]);
+  setTurn((currentTurn) => currentTurn + 1);
   // Where the white pieces are
   let qRook = "11";
   let kRook = "81";
