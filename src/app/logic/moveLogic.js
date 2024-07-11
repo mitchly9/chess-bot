@@ -269,6 +269,92 @@ export function showPawnMoves(
   );
 }
 
+function checkCastle(
+  isWhite,
+  boardState,
+  setPossibleMoves,
+  setBoardState,
+  kingMoved,
+  qRookMoved,
+  kRookMoved
+) {
+  // Where the white pieces are
+  let qRook = "11";
+  let kRook = "81";
+  let king = "51";
+
+  // Check it's empty between king and rook
+  let queenSide1 = "21";
+  let queenSide2 = "31";
+  let queenSide3 = "41";
+
+  let kingSide1 = "61";
+  let kingSide2 = "71";
+
+  // Where the circle pops up
+  let kingSideCastle = "71";
+  let queenSideCastle = "31";
+
+  let queenCastleType = "CQ";
+  let kingCastleType = "CK";
+
+  if (!isWhite) {
+    // Where the white pieces are
+    qRook = "18";
+    kRook = "88";
+    king = "58";
+
+    // Check it's empty between king and rook
+    queenSide1 = "28";
+    queenSide2 = "38";
+    queenSide3 = "48";
+
+    kingSide1 = "68";
+    kingSide2 = "78";
+
+    // Where the circle pops up
+    kingSideCastle = "78";
+    queenSideCastle = "38";
+
+    queenCastleType = "cq";
+    kingCastleType = "ck";
+  }
+  if (!kingMoved) {
+    // Queen Side
+    if (
+      !qRookMoved &&
+      boardState[queenSide1] == "-" &&
+      boardState[queenSide2] == "-" &&
+      boardState[queenSide3] == "-"
+    ) {
+      setPossibleMoves((currentPossibleMoves) => [
+        ...currentPossibleMoves,
+        [queenSideCastle],
+      ]);
+      setBoardState((boardState) => ({
+        ...boardState,
+        [queenSideCastle]: queenCastleType,
+      }));
+    }
+
+    // King Side
+    if (
+      !kRookMoved &&
+      boardState[kingSide1] == "-" &&
+      boardState[kingSide2] == "-"
+    ) {
+      setPossibleMoves((currentPossibleMoves) => [
+        ...currentPossibleMoves,
+        [kingSideCastle],
+      ]);
+      setBoardState((boardState) => ({
+        ...boardState,
+        [kingSideCastle]: kingCastleType,
+      }));
+    }
+  }
+}
+
 function attackPiece(
   attackedTile,
   isWhite,
@@ -405,14 +491,120 @@ export function showQueenMoves(
   );
 }
 
+export function castleKing(setBoardState, castleType, isWhite) {
+  // Where the white pieces are
+  let qRook = "11";
+  let kRook = "81";
+  let king = "51";
+
+  // Check it's empty between king and rook
+  let queenSide1 = "21";
+  let queenSide2 = "31";
+  let queenSide3 = "41";
+
+  let kingSide1 = "61";
+  let kingSide2 = "71";
+
+  // Where the circle pops up
+  let kingSideCastle = "71";
+  let queenSideCastle = "31";
+
+  let queenCastleType = "CQ";
+  let kingCastleType = "CK";
+
+  // Color Type
+  let kingColor = "K";
+  let rookColor = "R";
+
+  if (!isWhite) {
+    // Where the white pieces are
+    qRook = "18";
+    kRook = "88";
+    king = "58";
+
+    // Check it's empty between king and rook
+    queenSide1 = "28";
+    queenSide2 = "38";
+    queenSide3 = "48";
+
+    kingSide1 = "68";
+    kingSide2 = "78";
+
+    // Where the circle pops up
+    kingSideCastle = "78";
+    queenSideCastle = "38";
+
+    queenCastleType = "cq";
+    kingCastleType = "ck";
+
+    kingColor = "k";
+    rookColor = "r";
+  }
+
+  switch (castleType) {
+    case "cq":
+    case "CQ":
+      setBoardState((boardState) => ({
+        ...boardState,
+        [qRook]: "-",
+      }));
+      setBoardState((boardState) => ({
+        ...boardState,
+        [king]: "-",
+      }));
+      setBoardState((boardState) => ({
+        ...boardState,
+        [queenSideCastle]: kingCastleType,
+      }));
+      setBoardState((boardState) => ({
+        ...boardState,
+        [queenSide3]: rookColor,
+      }));
+      break;
+    case "ck":
+    case "CK":
+      setBoardState((boardState) => ({
+        ...boardState,
+        [kRook]: "-",
+      }));
+      setBoardState((boardState) => ({
+        ...boardState,
+        [king]: "-",
+      }));
+      setBoardState((boardState) => ({
+        ...boardState,
+        [kingSideCastle]: kingColor,
+      }));
+      setBoardState((boardState) => ({
+        ...boardState,
+        [kingSide1]: rookColor,
+      }));
+      break;
+    default:
+      break;
+  }
+}
+
 export function showKingMoves(
   tile,
   isWhite,
   boardState,
   setPossibleMoves,
   setBoardState,
-  setSelectedTile
+  setSelectedTile,
+  kingMoved,
+  qRookMoved,
+  kRookMoved
 ) {
+  checkCastle(
+    isWhite,
+    boardState,
+    setPossibleMoves,
+    setBoardState,
+    kingMoved,
+    qRookMoved,
+    kRookMoved
+  );
   setSelectedTile(tile);
   const ownPieces = isWhite ? whitePieces : blackPieces;
 

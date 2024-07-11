@@ -9,6 +9,7 @@ import {
   showPawnMoves,
   showQueenMoves,
   shownKnightMoves,
+  castleKing,
 } from "../logic/moveLogic";
 
 export default function Board() {
@@ -94,6 +95,15 @@ export default function Board() {
 
   const [possibleMoves, setPossibleMoves] = useState([]);
 
+  // Castling Check Variables
+  const [whiteKingMoved, setWhiteKingMoved] = useState(false);
+  const [whiteQueenRookMoved, setWhiteQueenRookMoved] = useState(false);
+  const [whiteKingRookMoved, setWhiteKingRookMoved] = useState(false);
+
+  const [blackKingMoved, setBlackKingMoved] = useState(false);
+  const [blackQueenRookMoved, setBlackQueenRookMoved] = useState(false);
+  const [blackKingRookMoved, setBlackKingRookMoved] = useState(false);
+
   // Upper case = white pieces
 
   function handleMove(tile) {
@@ -101,9 +111,20 @@ export default function Board() {
     if (tile === selectedTile) {
       setSelectedTile("");
     } else {
-      if (turn % 2 === 0) {
+      // if (turn % 2 === 0) {
+      if (true) {
         // Black Move
         switch (boardState[tile]) {
+          case "ck":
+            setBlackKingMoved(true);
+            setBlackKingRookMoved(true);
+            castleKing(setBoardState, "ck", false);
+            break;
+          case "cq":
+            setBlackKingMoved(true);
+            setBlackQueenRookMoved(true);
+            castleKing(setBoardState, "cq", false);
+            break;
           case "Px":
           case "Rx":
           case "Nx":
@@ -169,7 +190,10 @@ export default function Board() {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              blackKingMoved,
+              blackQueenRookMoved,
+              blackKingRookMoved
             );
           default:
             break;
@@ -177,6 +201,16 @@ export default function Board() {
       } else {
         // white move
         switch (boardState[tile]) {
+          case "CK":
+            setWhiteKingMoved(true);
+            setWhiteKingRookMoved(true);
+            castleKing(setBoardState, "CK", true);
+            break;
+          case "CQ":
+            setWhiteKingMoved(true);
+            setWhiteQueenRookMoved(true);
+            castleKing(setBoardState, "CQ", true);
+            break;
           case "px":
           case "rx":
           case "nx":
@@ -242,7 +276,10 @@ export default function Board() {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              whiteKingMoved,
+              whiteQueenRookMoved,
+              whiteKingMoved
             );
             break;
           default:
@@ -272,6 +309,9 @@ export default function Board() {
           case "Px":
             changeTo = "P";
             break;
+          case "Kx":
+            changeTo = "K";
+            break;
           case "qx":
             changeTo = "q";
             break;
@@ -286,6 +326,9 @@ export default function Board() {
             break;
           case "px":
             changeTo = "p";
+            break;
+          case "kx":
+            changeTo = "k";
             break;
           case "m":
             changeTo = "-";
@@ -305,6 +348,26 @@ export default function Board() {
   }
 
   function move(tile) {
+    if (tile === "11") {
+      setWhiteQueenRookMoved(true);
+    }
+    if (tile === "51") {
+      setWhiteKingMoved(true);
+    }
+    if (tile === "81") {
+      setWhiteKingRookMoved(true);
+    }
+
+    if (tile === "18") {
+      setBlackQueenRookMoved(true);
+    }
+    if (tile === "58") {
+      setBlackKingMoved(true);
+    }
+    if (tile === "88") {
+      setBlackKingRookMoved(true);
+    }
+
     setBoardState((boardState) => ({
       ...boardState,
       [tile]: boardState[selectedTile],
@@ -331,8 +394,6 @@ export default function Board() {
                   : "bg-[#7A945A]"
               }`}
             >
-              {boardState[tile]}
-
               {boardState[tile] === "k" ? (
                 <Image
                   src={"/pieceImages/blackKing.png"}
@@ -433,7 +494,11 @@ export default function Board() {
                   height={500}
                 />
               ) : null}
-              {boardState[tile] === "m" ? (
+              {boardState[tile] === "m" ||
+              boardState[tile] === "CQ" ||
+              boardState[tile] === "CK" ||
+              boardState[tile] === "cq" ||
+              boardState[tile] === "ck" ? (
                 <Image
                   src={"/pieceImages/move.png"}
                   alt="move"
@@ -475,6 +540,14 @@ export default function Board() {
                 />
               ) : null}
               {boardState[tile].toLowerCase() === "qx" ? (
+                <Image
+                  src={"/pieceImages/attackedQueen.png"}
+                  alt="move"
+                  width={500}
+                  height={500}
+                />
+              ) : null}
+              {boardState[tile].toLowerCase() === "kx" ? (
                 <Image
                   src={"/pieceImages/attackedQueen.png"}
                   alt="move"
