@@ -111,8 +111,8 @@ export default function Board() {
     if (tile === selectedTile) {
       setSelectedTile("");
     } else {
-      // if (turn % 2 === 0) {
-      if (true) {
+      if (turn % 2 === 0) {
+        // if (true) {
         // Black Move
         switch (boardState[tile]) {
           case "ck":
@@ -204,12 +204,12 @@ export default function Board() {
           case "CK":
             setWhiteKingMoved(true);
             setWhiteKingRookMoved(true);
-            castleKing(setBoardState, "CK", true);
+            castleKing(setBoardState, "CK", true, setSelectedTile);
             break;
           case "CQ":
             setWhiteKingMoved(true);
             setWhiteQueenRookMoved(true);
-            castleKing(setBoardState, "CQ", true);
+            castleKing(setBoardState, "CQ", true, setSelectedTile);
             break;
           case "px":
           case "rx":
