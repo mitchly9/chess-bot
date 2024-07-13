@@ -230,8 +230,17 @@ export function showPawnMoves(
   boardState,
   setPossibleMoves,
   setBoardState,
-  setSelectedTile
+  setSelectedTile,
+  moves
 ) {
+  checkEnPassant(
+    tile,
+    isWhite,
+    boardState,
+    setPossibleMoves,
+    setBoardState,
+    moves
+  );
   setSelectedTile(tile);
   let verticalMove = isWhite ? parseInt(tile[1]) + 1 : parseInt(tile[1]) - 1;
 
@@ -352,6 +361,70 @@ function checkCastle(
         [kingSideCastle]: kingCastleType,
       }));
     }
+  }
+}
+
+function checkEnPassant(
+  currentTile,
+  isWhite,
+  boardState,
+  setPossibleMoves,
+  setBoardState,
+  moves
+) {
+  if (isWhite) {
+    if (currentTile[1] !== "5") {
+      return;
+    }
+  } else {
+    if (currentTile[1] !== "4") {
+      return;
+    }
+  }
+
+  const opponentPieces = isWhite ? "p" : "P";
+  const take = isWhite ? "EN" : "en";
+  const charMap = {
+    1: "a",
+    2: "b",
+    3: "c",
+    4: "d",
+    5: "e",
+    6: "f",
+    7: "g",
+    8: "h",
+  };
+  let leftSide = currentTile[0] - 1 + currentTile[1];
+  let rightSide = parseInt(currentTile[0]) + 1 + currentTile[1];
+  console.log(rightSide);
+
+  if (
+    boardState[leftSide] === opponentPieces &&
+    moves[moves.length - 1] === charMap[currentTile[0] - 1] + currentTile[1]
+  ) {
+    setPossibleMoves((currentPossibleMoves) => [
+      ...currentPossibleMoves,
+      [leftSide[0] + (parseInt(currentTile[1]) + 1)],
+    ]);
+    setBoardState((boardState) => ({
+      ...boardState,
+      [leftSide[0] + (parseInt(currentTile[1]) + 1)]: take,
+    }));
+  }
+
+  if (
+    boardState[rightSide] === opponentPieces &&
+    moves[moves.length - 1] ===
+      charMap[parseInt(currentTile[0]) + 1] + currentTile[1]
+  ) {
+    setPossibleMoves((currentPossibleMoves) => [
+      ...currentPossibleMoves,
+      [rightSide[0] + (parseInt(currentTile[1]) + 1)],
+    ]);
+    setBoardState((boardState) => ({
+      ...boardState,
+      [rightSide[0] + (parseInt(currentTile[1]) + 1)]: take,
+    }));
   }
 }
 
@@ -495,7 +568,9 @@ export function castleKing(
   setBoardState,
   castleType,
   isWhite,
-  setSelectedTile
+  setSelectedTile,
+  setPossibleMoves,
+  setTurn
 ) {
   setSelectedTile("");
   setPossibleMoves([]);
