@@ -12,7 +12,7 @@ import {
   castleKing,
 } from "../logic/moveLogic";
 
-export default function Board() {
+export default function Board({ moves, setMoves }) {
   const [turn, setTurn] = useState(1);
   const [selectedTile, setSelectedTile] = useState("");
   const board = [
@@ -118,20 +118,41 @@ export default function Board() {
           case "ck":
             setBlackKingMoved(true);
             setBlackKingRookMoved(true);
-            castleKing(setBoardState, "ck", false);
+            castleKing(
+              setBoardState,
+              "ck",
+              false,
+              setSelectedTile,
+              setPossibleMoves,
+              setTurn
+            );
+            setMoves((moves) => [...moves, "0-0"]);
             break;
           case "cq":
             setBlackKingMoved(true);
             setBlackQueenRookMoved(true);
-            castleKing(setBoardState, "cq", false);
+            castleKing(
+              setBoardState,
+              "cq",
+              false,
+              setSelectedTile,
+              setPossibleMoves,
+              setTurn
+            );
+            setMoves((moves) => [...moves, "0-0-0"]);
             break;
           case "Px":
           case "Rx":
           case "Nx":
           case "Bx":
           case "Qx":
+          case "en":
+            setBoardState((boardState) => ({
+              ...boardState,
+              [tile[0] + parseInt(tile[1]) + 1]: "-",
+            }));
           case "m":
-            move(tile);
+            move(tile, setMoves);
             break;
           case "p":
             showPawnMoves(
@@ -140,7 +161,8 @@ export default function Board() {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              moves
             );
             break;
           case "r":
@@ -204,20 +226,41 @@ export default function Board() {
           case "CK":
             setWhiteKingMoved(true);
             setWhiteKingRookMoved(true);
-            castleKing(setBoardState, "CK", true, setSelectedTile);
+            castleKing(
+              setBoardState,
+              "CK",
+              true,
+              setSelectedTile,
+              setPossibleMoves,
+              setTurn
+            );
+            setMoves((moves) => [...moves, "0-0"]);
             break;
           case "CQ":
             setWhiteKingMoved(true);
             setWhiteQueenRookMoved(true);
-            castleKing(setBoardState, "CQ", true, setSelectedTile);
+            castleKing(
+              setBoardState,
+              "CQ",
+              true,
+              setSelectedTile,
+              setPossibleMoves,
+              setTurn
+            );
+            setMoves((moves) => [...moves, "0-0-0"]);
             break;
           case "px":
           case "rx":
           case "nx":
           case "bx":
           case "qx":
+          case "EN":
+            setBoardState((boardState) => ({
+              ...boardState,
+              [tile[0] + parseInt(tile[1]) - 1]: "-",
+            }));
           case "m":
-            move(tile);
+            move(tile, setMoves);
             break;
           case "P":
             showPawnMoves(
@@ -226,7 +269,8 @@ export default function Board() {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              moves
             );
             break;
           case "R":
@@ -347,7 +391,7 @@ export default function Board() {
     }
   }
 
-  function move(tile) {
+  function move(tile, setMoves) {
     if (tile === "11") {
       setWhiteQueenRookMoved(true);
     }
@@ -368,6 +412,26 @@ export default function Board() {
       setBlackKingRookMoved(true);
     }
 
+    const charMap = {
+      1: "a",
+      2: "b",
+      3: "c",
+      4: "d",
+      5: "e",
+      6: "f",
+      7: "g",
+      8: "h",
+    };
+
+    setMoves((moves) => [
+      ...moves,
+      (boardState[selectedTile].toLowerCase() !== "p"
+        ? boardState[selectedTile].toUpperCase()
+        : "") +
+        (boardState[tile].includes("x") ? "x" : "") +
+        charMap[tile[0]] +
+        tile.substring(1),
+    ]);
     setBoardState((boardState) => ({
       ...boardState,
       [tile]: boardState[selectedTile],
@@ -498,7 +562,9 @@ export default function Board() {
               boardState[tile] === "CQ" ||
               boardState[tile] === "CK" ||
               boardState[tile] === "cq" ||
-              boardState[tile] === "ck" ? (
+              boardState[tile] === "ck" ||
+              boardState[tile] === "en" ||
+              boardState[tile] === "EN" ? (
                 <Image
                   src={"/pieceImages/move.png"}
                   alt="move"
