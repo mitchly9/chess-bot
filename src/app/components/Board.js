@@ -104,6 +104,86 @@ export default function Board({ moves, setMoves }) {
   const [blackQueenRookMoved, setBlackQueenRookMoved] = useState(false);
   const [blackKingRookMoved, setBlackKingRookMoved] = useState(false);
 
+  function restartGame() {
+    setWhiteKingMoved(false);
+    setWhiteQueenRookMoved(false);
+    setWhiteKingRookMoved(false);
+
+    setBlackKingMoved(false);
+    setBlackQueenRookMoved(false);
+    setBlackKingRookMoved(false);
+
+    setSelectedTile("");
+    setTurn(1);
+    setMoves([]);
+
+    setBoardState({
+      18: "r",
+      28: "n",
+      38: "b",
+      48: "q",
+      58: "k",
+      68: "b",
+      78: "n",
+      88: "r",
+      17: "p",
+      27: "p",
+      37: "p",
+      47: "p",
+      57: "p",
+      67: "p",
+      77: "p",
+      87: "p",
+      16: "-",
+      26: "-",
+      36: "-",
+      46: "-",
+      56: "-",
+      66: "-",
+      76: "-",
+      86: "-",
+      15: "-",
+      25: "-",
+      35: "-",
+      45: "-",
+      55: "-",
+      65: "-",
+      75: "-",
+      85: "-",
+      14: "-",
+      24: "-",
+      34: "-",
+      44: "-",
+      54: "-",
+      64: "-",
+      74: "-",
+      84: "-",
+      13: "-",
+      23: "-",
+      33: "-",
+      43: "-",
+      53: "-",
+      63: "-",
+      73: "-",
+      83: "-",
+      12: "P",
+      22: "P",
+      32: "P",
+      42: "P",
+      52: "P",
+      62: "P",
+      72: "P",
+      82: "P",
+      11: "R",
+      21: "N",
+      31: "B",
+      41: "Q",
+      51: "K",
+      61: "B",
+      71: "N",
+      81: "R",
+    });
+  }
   // Upper case = white pieces
 
   function handleMove(tile) {
@@ -141,16 +221,16 @@ export default function Board({ moves, setMoves }) {
             );
             setMoves((moves) => [...moves, "0-0-0"]);
             break;
-          case "Px":
-          case "Rx":
-          case "Nx":
-          case "Bx":
-          case "Qx":
           case "en":
             setBoardState((boardState) => ({
               ...boardState,
               [tile[0] + parseInt(tile[1]) + 1]: "-",
             }));
+          case "Px":
+          case "Rx":
+          case "Nx":
+          case "Bx":
+          case "Qx":
           case "m":
             move(tile, setMoves);
             break;
@@ -249,16 +329,16 @@ export default function Board({ moves, setMoves }) {
             );
             setMoves((moves) => [...moves, "0-0-0"]);
             break;
-          case "px":
-          case "rx":
-          case "nx":
-          case "bx":
-          case "qx":
           case "EN":
             setBoardState((boardState) => ({
               ...boardState,
               [tile[0] + parseInt(tile[1]) - 1]: "-",
             }));
+          case "px":
+          case "rx":
+          case "nx":
+          case "bx":
+          case "qx":
           case "m":
             move(tile, setMoves);
             break;
@@ -432,6 +512,8 @@ export default function Board({ moves, setMoves }) {
         charMap[tile[0]] +
         tile.substring(1),
     ]);
+    console.log("moved");
+    console.log(boardState[selectedTile]);
     setBoardState((boardState) => ({
       ...boardState,
       [tile]: boardState[selectedTile],
@@ -443,188 +525,198 @@ export default function Board({ moves, setMoves }) {
   }
 
   return (
-    <div className="grid grid-rows-8 bg-black flex-grow max-h-[1150px] max-w-[1150px] aspect-square">
-      {/* <div className="text-white"> {selectedTile}</div> */}
-      {board.map((row, rowIndex) => (
-        <div key={rowIndex} className="grid grid-cols-8 w-full h-full">
-          {row.map((tile, colIndex) => (
-            <div
-              onClick={() => handleMove(tile)}
-              key={tile}
-              className={`h-full w-full flex justify-center place-items-center ${
-                (rowIndex % 2 === 0 && colIndex % 2 === 0) ||
-                (rowIndex % 2 !== 0 && colIndex % 2 !== 0)
-                  ? "bg-[#EBECD3]"
-                  : "bg-[#7A945A]"
-              }`}
-            >
-              {boardState[tile] === "k" ? (
-                <Image
-                  src={"/pieceImages/blackKing.png"}
-                  alt="Black King"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile] === "K" ? (
-                <Image
-                  src={"/pieceImages/whiteKing.png"}
-                  alt="Black King"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile] === "N" ? (
-                <Image
-                  src={"/pieceImages/whiteKnight.png"}
-                  alt="White Knight"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile] === "n" ? (
-                <Image
-                  src={"/pieceImages/blackKnight.png"}
-                  alt="Black Knight"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
+    <div className="flex flex-col justify-center place-items-center">
+      <button
+        onClick={restartGame}
+        className="text-black mb-2 p-2 h-fit w-fit "
+      >
+        restart
+      </button>
 
-              {boardState[tile] === "R" ? (
-                <Image
-                  src={"/pieceImages/whiteRook.png"}
-                  alt="White Rook"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile] === "r" ? (
-                <Image
-                  src={"/pieceImages/blackRook.png"}
-                  alt="Black Rook"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
+      <div className="grid grid-rows-8  flex-grow max-h-[1150px] max-w-[1150px] aspect-square">
+        {/* <div className="text-white"> {selectedTile}</div> */}
+        {board.map((row, rowIndex) => (
+          <div key={rowIndex} className="grid grid-cols-8 w-full h-full">
+            {row.map((tile, colIndex) => (
+              <div
+                onClick={() => handleMove(tile)}
+                key={tile}
+                className={`h-full w-full flex justify-center place-items-center ${
+                  (rowIndex % 2 === 0 && colIndex % 2 === 0) ||
+                  (rowIndex % 2 !== 0 && colIndex % 2 !== 0)
+                    ? "bg-[#EBECD3]"
+                    : "bg-[#7A945A]"
+                }`}
+              >
+                {/* <div> {boardState[tile]}</div> */}
+                {boardState[tile] === "k" ? (
+                  <Image
+                    src={"/pieceImages/blackKing.png"}
+                    alt="Black King"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile] === "K" ? (
+                  <Image
+                    src={"/pieceImages/whiteKing.png"}
+                    alt="Black King"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile] === "N" ? (
+                  <Image
+                    src={"/pieceImages/whiteKnight.png"}
+                    alt="White Knight"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile] === "n" ? (
+                  <Image
+                    src={"/pieceImages/blackKnight.png"}
+                    alt="Black Knight"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
 
-              {boardState[tile] === "P" ? (
-                <Image
-                  src={"/pieceImages/whitePawn.png"}
-                  alt="White Pawn"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile] === "p" ? (
-                <Image
-                  src={"/pieceImages/blackPawn.png"}
-                  alt="Black Pawn"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
+                {boardState[tile] === "R" ? (
+                  <Image
+                    src={"/pieceImages/whiteRook.png"}
+                    alt="White Rook"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile] === "r" ? (
+                  <Image
+                    src={"/pieceImages/blackRook.png"}
+                    alt="Black Rook"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
 
-              {boardState[tile] === "B" ? (
-                <Image
-                  src={"/pieceImages/whiteBishop.png"}
-                  alt="White Bishop"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile] === "b" ? (
-                <Image
-                  src={"/pieceImages/blackBishop.png"}
-                  alt="Black Bishop"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
+                {boardState[tile] === "P" ? (
+                  <Image
+                    src={"/pieceImages/whitePawn.png"}
+                    alt="White Pawn"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile] === "p" ? (
+                  <Image
+                    src={"/pieceImages/blackPawn.png"}
+                    alt="Black Pawn"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
 
-              {boardState[tile] === "Q" ? (
-                <Image
-                  src={"/pieceImages/whiteQueen.png"}
-                  alt="White Queen"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile] === "q" ? (
-                <Image
-                  src={"/pieceImages/blackQueen.png"}
-                  alt="Black Queen"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile] === "m" ||
-              boardState[tile] === "CQ" ||
-              boardState[tile] === "CK" ||
-              boardState[tile] === "cq" ||
-              boardState[tile] === "ck" ||
-              boardState[tile] === "en" ||
-              boardState[tile] === "EN" ? (
-                <Image
-                  src={"/pieceImages/move.png"}
-                  alt="move"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
+                {boardState[tile] === "B" ? (
+                  <Image
+                    src={"/pieceImages/whiteBishop.png"}
+                    alt="White Bishop"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile] === "b" ? (
+                  <Image
+                    src={"/pieceImages/blackBishop.png"}
+                    alt="Black Bishop"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
 
-              {boardState[tile].toLowerCase() === "px" ? (
-                <Image
-                  src={"/pieceImages/attackedPawn.png"}
-                  alt="move"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile].toLowerCase() === "rx" ? (
-                <Image
-                  src={"/pieceImages/attackedRook.png"}
-                  alt="move"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile].toLowerCase() === "nx" ? (
-                <Image
-                  src={"/pieceImages/attackedKnight.png"}
-                  alt="move"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile].toLowerCase() === "bx" ? (
-                <Image
-                  src={"/pieceImages/attackedBishop.png"}
-                  alt="move"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile].toLowerCase() === "qx" ? (
-                <Image
-                  src={"/pieceImages/attackedQueen.png"}
-                  alt="move"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-              {boardState[tile].toLowerCase() === "kx" ? (
-                <Image
-                  src={"/pieceImages/attackedQueen.png"}
-                  alt="move"
-                  width={500}
-                  height={500}
-                />
-              ) : null}
-            </div>
-          ))}
-        </div>
-      ))}
+                {boardState[tile] === "Q" ? (
+                  <Image
+                    src={"/pieceImages/whiteQueen.png"}
+                    alt="White Queen"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile] === "q" ? (
+                  <Image
+                    src={"/pieceImages/blackQueen.png"}
+                    alt="Black Queen"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile] === "m" ||
+                boardState[tile] === "CQ" ||
+                boardState[tile] === "CK" ||
+                boardState[tile] === "cq" ||
+                boardState[tile] === "ck" ||
+                boardState[tile] === "en" ||
+                boardState[tile] === "EN" ? (
+                  <Image
+                    src={"/pieceImages/move.png"}
+                    alt="move"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+
+                {boardState[tile].toLowerCase() === "px" ? (
+                  <Image
+                    src={"/pieceImages/attackedPawn.png"}
+                    alt="move"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile].toLowerCase() === "rx" ? (
+                  <Image
+                    src={"/pieceImages/attackedRook.png"}
+                    alt="move"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile].toLowerCase() === "nx" ? (
+                  <Image
+                    src={"/pieceImages/attackedKnight.png"}
+                    alt="move"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile].toLowerCase() === "bx" ? (
+                  <Image
+                    src={"/pieceImages/attackedBishop.png"}
+                    alt="move"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile].toLowerCase() === "qx" ? (
+                  <Image
+                    src={"/pieceImages/attackedQueen.png"}
+                    alt="move"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+                {boardState[tile].toLowerCase() === "kx" ? (
+                  <Image
+                    src={"/pieceImages/attackedQueen.png"}
+                    alt="move"
+                    width={500}
+                    height={500}
+                  />
+                ) : null}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
