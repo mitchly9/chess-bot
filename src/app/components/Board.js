@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   showRookMoves,
   showBishopMoves,
@@ -13,6 +13,7 @@ import {
 } from "../logic/moveLogic";
 
 export default function Board({ moves, setMoves }) {
+  const [chosenMoves, setChosenMoves] = useState();
   const [turn, setTurn] = useState(1);
   const [selectedTile, setSelectedTile] = useState("");
   const board = [
@@ -26,6 +27,12 @@ export default function Board({ moves, setMoves }) {
     ["11", "21", "31", "41", "51", "61", "71", "81"],
   ];
 
+  useEffect(() => {
+    if (chosenMoves.length === 0 && turn % 2 === 0) {
+      calculateMove();
+    }
+  }, [chosenMoves]);
+  function calculateMove() {}
   const [boardState, setBoardState] = useState({
     18: "r",
     28: "n",
@@ -403,7 +410,7 @@ export default function Board({ moves, setMoves }) {
               setSelectedTile,
               whiteKingMoved,
               whiteQueenRookMoved,
-              whiteKingMoved
+              whiteKingRookMoved
             );
             break;
           default:
@@ -415,6 +422,7 @@ export default function Board({ moves, setMoves }) {
 
   function clearCurrentMoves() {
     if (possibleMoves.length !== 0) {
+      console.log("in the method");
       possibleMoves.forEach((possibleMove) => {
         let changeTo;
         switch (boardState[possibleMove]) {
@@ -524,6 +532,12 @@ export default function Board({ moves, setMoves }) {
     setTurn((currentTurn) => currentTurn + 1);
   }
 
+  function test() {
+    let move = chosenMoves.shift(); // Remove the first element "22"
+    setChosenMoves[[...chosenMoves]];
+    handleMove(move); // Pass "22" to handleMove (assuming it's a function that accepts a parameter)
+  }
+
   return (
     <div className="flex flex-col justify-center place-items-center">
       <button
@@ -533,8 +547,20 @@ export default function Board({ moves, setMoves }) {
         restart
       </button>
 
+      <button
+        onClick={() => {
+          test();
+        }}
+        className={`p-5 border-2 mt-2 ${
+          chosenMoves.length !== 0 ? "text-green border-4" : "border-0"
+        }`}
+      >
+        run test
+      </button>
+
       <div className="grid grid-rows-8  flex-grow max-h-[1150px] max-w-[1150px] aspect-square">
-        {/* <div className="text-white"> {selectedTile}</div> */}
+        <div className="text-white"> {selectedTile}</div>
+        <div className="text-white"> {possibleMoves}</div>
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="grid grid-cols-8 w-full h-full">
             {row.map((tile, colIndex) => (
