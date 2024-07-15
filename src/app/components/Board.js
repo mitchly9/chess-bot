@@ -12,27 +12,7 @@ import {
   castleKing,
 } from "../logic/moveLogic";
 
-export default function Board({ moves, setMoves }) {
-  const [chosenMoves, setChosenMoves] = useState();
-  const [turn, setTurn] = useState(1);
-  const [selectedTile, setSelectedTile] = useState("");
-  const board = [
-    ["18", "28", "38", "48", "58", "68", "78", "88"],
-    ["17", "27", "37", "47", "57", "67", "77", "87"],
-    ["16", "26", "36", "46", "56", "66", "76", "86"],
-    ["15", "25", "35", "45", "55", "65", "75", "85"],
-    ["14", "24", "34", "44", "54", "64", "74", "84"],
-    ["13", "23", "33", "43", "53", "63", "73", "83"],
-    ["12", "22", "32", "42", "52", "62", "72", "82"],
-    ["11", "21", "31", "41", "51", "61", "71", "81"],
-  ];
-
-  useEffect(() => {
-    if (chosenMoves.length === 0 && turn % 2 === 0) {
-      calculateMove();
-    }
-  }, [chosenMoves]);
-  function calculateMove() {}
+export default function Board() {
   const [boardState, setBoardState] = useState({
     18: "r",
     28: "n",
@@ -110,6 +90,102 @@ export default function Board({ moves, setMoves }) {
   const [blackKingMoved, setBlackKingMoved] = useState(false);
   const [blackQueenRookMoved, setBlackQueenRookMoved] = useState(false);
   const [blackKingRookMoved, setBlackKingRookMoved] = useState(false);
+  const [moves, setMoves] = useState([]);
+
+  const [chosenMoves, setChosenMoves] = useState([]);
+  const [turn, setTurn] = useState(1);
+  const [selectedTile, setSelectedTile] = useState("");
+  const board = [
+    ["18", "28", "38", "48", "58", "68", "78", "88"],
+    ["17", "27", "37", "47", "57", "67", "77", "87"],
+    ["16", "26", "36", "46", "56", "66", "76", "86"],
+    ["15", "25", "35", "45", "55", "65", "75", "85"],
+    ["14", "24", "34", "44", "54", "64", "74", "84"],
+    ["13", "23", "33", "43", "53", "63", "73", "83"],
+    ["12", "22", "32", "42", "52", "62", "72", "82"],
+    ["11", "21", "31", "41", "51", "61", "71", "81"],
+  ];
+  const [searching, setSearching] = useState(false);
+  const [searchIteration, setSearchIteration] = useState(1);
+
+  // Finds a move for the AI
+  useEffect(() => {
+    if (chosenMoves.length === 0 && turn % 2 === 0) {
+      findValidMove(false);
+      setSearching(true);
+    }
+  }, [turn]);
+
+  useEffect(() => {}, [boardState, searching]);
+  useEffect(() => {
+    if (searching && possibleMoves.length === 0) {
+      // Continue searching for a valid move if possibleMoves is empty
+      findValidMove();
+    } else if (searching && possibleMoves.length !== 0) {
+      setChosenMoves((prevChosenMoves) => [
+        ...prevChosenMoves,
+        possibleMoves[Math.floor(Math.random() * possibleMoves.length)],
+      ]);
+      setPossibleMoves([]);
+      setSelectedTile("");
+      setSearching(false); // Stop searching oncee valid moves are found
+    }
+  }, [searchIteration]);
+
+  const [playNextMove, setPlayNextMove] = useState(1);
+  // Plays the move for the AI
+  useEffect(() => {
+    if (turn % 2 === 0 && searching === false) {
+      // console.log("in the AI");
+      // console.log(chosenMoves);
+      let move = chosenMoves.shift(); // Remove the first element "22"
+      // console.log("MOVING");
+      // console.log(move);
+      // console.log(boardState[move]);
+      setChosenMoves[[...chosenMoves]];
+      handleMove(move, true); // Pass "22" to handleMove (assuming it's a function that accepts a parameter)
+      // setTimeout(() => {
+      setPlayNextMove((playNextMove) => playNextMove + 1);
+      // }, 1000);
+    }
+  }, [chosenMoves]);
+
+  useEffect(() => {
+    if (chosenMoves.length === 1) {
+      // console.log("TO ");
+      let move = chosenMoves.shift(); // Remove the first element "22"
+      // console.log(move[0]);
+
+      setChosenMoves[[...chosenMoves]];
+      handleMove(move[0], true);
+    }
+  }, [playNextMove]);
+
+  function findValidMove(isWhite) {
+    const whitePieces = ["P", "R", "N", "B", "Q", "K"];
+    const blackPieces = ["p", "r", "n", "b", "q", "k"];
+    const ownPieces = isWhite ? whitePieces : blackPieces;
+
+    while (true) {
+      const randomIndex = Math.floor(Math.random() * boardStateKeys.length);
+      const randomKey = boardStateKeys[randomIndex];
+
+      if (
+        !boardState[randomKey].includes(ownPieces) &&
+        boardState[randomKey] !== "-"
+      ) {
+        handleMove(randomKey, false);
+        setChosenMoves([randomKey]);
+        setSearchIteration((searchIteration) => searchIteration + 1);
+        break; // Exit the loop to allow state update
+      }
+    }
+  }
+
+  function calculateMove(isWhite) {
+    setSearching(true);
+    findValidMove();
+  }
 
   function restartGame() {
     setWhiteKingMoved(false);
@@ -191,9 +267,12 @@ export default function Board({ moves, setMoves }) {
       81: "R",
     });
   }
+
+  const boardStateKeys = Object.keys(boardState);
+
   // Upper case = white pieces
 
-  function handleMove(tile) {
+  function handleMove(tile, show) {
     clearCurrentMoves();
     if (tile === selectedTile) {
       setSelectedTile("");
@@ -233,13 +312,15 @@ export default function Board({ moves, setMoves }) {
               ...boardState,
               [tile[0] + parseInt(tile[1]) + 1]: "-",
             }));
+            move(tile);
+            break;
           case "Px":
           case "Rx":
           case "Nx":
           case "Bx":
           case "Qx":
           case "m":
-            move(tile, setMoves);
+            move(tile);
             break;
           case "p":
             showPawnMoves(
@@ -249,7 +330,8 @@ export default function Board({ moves, setMoves }) {
               setPossibleMoves,
               setBoardState,
               setSelectedTile,
-              moves
+              moves,
+              show
             );
             break;
           case "r":
@@ -259,7 +341,8 @@ export default function Board({ moves, setMoves }) {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              show
             );
             break;
           case "n":
@@ -269,7 +352,8 @@ export default function Board({ moves, setMoves }) {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              show
             );
             break;
           case "b":
@@ -279,7 +363,8 @@ export default function Board({ moves, setMoves }) {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              show
             );
             break;
           case "q":
@@ -289,7 +374,8 @@ export default function Board({ moves, setMoves }) {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              show
             );
             break;
           case "k":
@@ -302,7 +388,8 @@ export default function Board({ moves, setMoves }) {
               setSelectedTile,
               blackKingMoved,
               blackQueenRookMoved,
-              blackKingRookMoved
+              blackKingRookMoved,
+              show
             );
           default:
             break;
@@ -341,13 +428,15 @@ export default function Board({ moves, setMoves }) {
               ...boardState,
               [tile[0] + parseInt(tile[1]) - 1]: "-",
             }));
+            move(tile);
+            break;
           case "px":
           case "rx":
           case "nx":
           case "bx":
           case "qx":
           case "m":
-            move(tile, setMoves);
+            move(tile);
             break;
           case "P":
             showPawnMoves(
@@ -357,7 +446,8 @@ export default function Board({ moves, setMoves }) {
               setPossibleMoves,
               setBoardState,
               setSelectedTile,
-              moves
+              moves,
+              show
             );
             break;
           case "R":
@@ -367,7 +457,8 @@ export default function Board({ moves, setMoves }) {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              show
             );
             break;
           case "N":
@@ -377,7 +468,8 @@ export default function Board({ moves, setMoves }) {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              show
             );
             break;
           case "B":
@@ -387,7 +479,8 @@ export default function Board({ moves, setMoves }) {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              show
             );
             break;
           case "Q":
@@ -397,7 +490,8 @@ export default function Board({ moves, setMoves }) {
               boardState,
               setPossibleMoves,
               setBoardState,
-              setSelectedTile
+              setSelectedTile,
+              show
             );
             break;
           case "K":
@@ -410,7 +504,8 @@ export default function Board({ moves, setMoves }) {
               setSelectedTile,
               whiteKingMoved,
               whiteQueenRookMoved,
-              whiteKingRookMoved
+              whiteKingRookMoved,
+              show
             );
             break;
           default:
@@ -422,7 +517,6 @@ export default function Board({ moves, setMoves }) {
 
   function clearCurrentMoves() {
     if (possibleMoves.length !== 0) {
-      console.log("in the method");
       possibleMoves.forEach((possibleMove) => {
         let changeTo;
         switch (boardState[possibleMove]) {
@@ -465,8 +559,9 @@ export default function Board({ moves, setMoves }) {
           case "m":
             changeTo = "-";
             break;
+          case "-":
+            break;
           default:
-            changeTo = "-";
             break;
         }
         setBoardState((boardState) => ({
@@ -479,7 +574,7 @@ export default function Board({ moves, setMoves }) {
     }
   }
 
-  function move(tile, setMoves) {
+  function move(tile) {
     if (tile === "11") {
       setWhiteQueenRookMoved(true);
     }
@@ -511,6 +606,10 @@ export default function Board({ moves, setMoves }) {
       8: "h",
     };
 
+    console.log(boardState[selectedTile]);
+    console.log(tile);
+    console.log(charMap[tile[0]]);
+    console.log(tile[1]);
     setMoves((moves) => [
       ...moves,
       (boardState[selectedTile].toLowerCase() !== "p"
@@ -518,10 +617,8 @@ export default function Board({ moves, setMoves }) {
         : "") +
         (boardState[tile].includes("x") ? "x" : "") +
         charMap[tile[0]] +
-        tile.substring(1),
+        tile[1],
     ]);
-    console.log("moved");
-    console.log(boardState[selectedTile]);
     setBoardState((boardState) => ({
       ...boardState,
       [tile]: boardState[selectedTile],
@@ -530,12 +627,6 @@ export default function Board({ moves, setMoves }) {
     setSelectedTile("");
     setPossibleMoves([]);
     setTurn((currentTurn) => currentTurn + 1);
-  }
-
-  function test() {
-    let move = chosenMoves.shift(); // Remove the first element "22"
-    setChosenMoves[[...chosenMoves]];
-    handleMove(move); // Pass "22" to handleMove (assuming it's a function that accepts a parameter)
   }
 
   return (
@@ -547,25 +638,15 @@ export default function Board({ moves, setMoves }) {
         restart
       </button>
 
-      <button
-        onClick={() => {
-          test();
-        }}
-        className={`p-5 border-2 mt-2 ${
-          chosenMoves.length !== 0 ? "text-green border-4" : "border-0"
-        }`}
-      >
-        run test
-      </button>
-
       <div className="grid grid-rows-8  flex-grow max-h-[1150px] max-w-[1150px] aspect-square">
         <div className="text-white"> {selectedTile}</div>
         <div className="text-white"> {possibleMoves}</div>
+        {/* {console.log(boardState)} */}
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="grid grid-cols-8 w-full h-full">
             {row.map((tile, colIndex) => (
               <div
-                onClick={() => handleMove(tile)}
+                onClick={() => handleMove(tile, true)}
                 key={tile}
                 className={`h-full w-full flex justify-center place-items-center ${
                   (rowIndex % 2 === 0 && colIndex % 2 === 0) ||
@@ -689,7 +770,6 @@ export default function Board({ moves, setMoves }) {
                     height={500}
                   />
                 ) : null}
-
                 {boardState[tile].toLowerCase() === "px" ? (
                   <Image
                     src={"/pieceImages/attackedPawn.png"}
@@ -742,6 +822,23 @@ export default function Board({ moves, setMoves }) {
             ))}
           </div>
         ))}
+      </div>
+      <div className="text-white max-h-[1150px] max-w-[1150px] flex flex-wrap justify-start items-start w-full overflow-auto">
+        {moves.map((move, index) => {
+          // Check if the current index is the start of a new row
+          if (index % 2 === 0) {
+            return (
+              <div key={index} className="flex space-x-1 ml-3">
+                <div> {Math.ceil(index / 2) + 1}. </div>
+                <div className="text-white">{moves[index]}</div>
+                {moves[index + 1] && (
+                  <div className="text-white">{moves[index + 1]}</div>
+                )}
+              </div>
+            );
+          }
+          return <div key={index} className="flex space-x-1 ml-3"></div>;
+        })}
       </div>
     </div>
   );
