@@ -7,7 +7,8 @@ export function showRookMoves(
   boardState,
   setPossibleMoves,
   setBoardState,
-  setSelectedTile
+  setSelectedTile,
+  show
 ) {
   setSelectedTile(tile);
   const ownPieces = isWhite ? whitePieces : blackPieces;
@@ -18,7 +19,8 @@ export function showRookMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   rightMove(
     tile,
@@ -26,16 +28,26 @@ export function showRookMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
-  upMove(tile, isWhite, ownPieces, boardState, setPossibleMoves, setBoardState);
+  upMove(
+    tile,
+    isWhite,
+    ownPieces,
+    boardState,
+    setPossibleMoves,
+    setBoardState,
+    show
+  );
   downMove(
     tile,
     isWhite,
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
 }
 
@@ -45,7 +57,8 @@ export function shownKnightMoves(
   boardState,
   setPossibleMoves,
   setBoardState,
-  setSelectedTile
+  setSelectedTile,
+  show
 ) {
   setSelectedTile(tile);
   const ownPieces = isWhite ? whitePieces : blackPieces;
@@ -71,156 +84,198 @@ export function shownKnightMoves(
   let rightDownAttack = rightRightMove.toString() + downMove;
 
   if (
+    upUpMove <= 8 &&
+    leftMove >= 1 &&
     !ownPieces.includes(boardState[upLeftAttack]) &&
     !attackPiece(
       upLeftAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [upLeftAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [upLeftAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [upLeftAttack]: "m",
+      }));
+    }
   }
+
   if (
+    upUpMove <= 8 &&
+    rightMove <= 8 &&
     !ownPieces.includes(boardState[upRightAttack]) &&
     !attackPiece(
       upRightAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [upRightAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [upRightAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [upRightAttack]: "m",
+      }));
+    }
   }
   if (
+    downDownMove >= 1 &&
+    leftMove >= 1 &&
     !ownPieces.includes(boardState[downLeftAttack]) &&
     !attackPiece(
       downLeftAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [downLeftAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [downLeftAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [downLeftAttack]: "m",
+      }));
+    }
   }
   if (
+    downDownMove >= 1 &&
+    rightMove <= 8 &&
     !ownPieces.includes(boardState[downRightAttack]) &&
     !attackPiece(
       downRightAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [downRightAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [downRightAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [downRightAttack]: "m",
+      }));
+    }
   }
   if (
+    leftLeftMove >= 1 &&
+    upMove <= 8 &&
     !ownPieces.includes(boardState[leftUpAttack]) &&
     !attackPiece(
       leftUpAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [leftUpAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [leftUpAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [leftUpAttack]: "m",
+      }));
+    }
   }
+
   if (
+    leftLeftMove >= 1 &&
+    downMove >= 1 &&
     !ownPieces.includes(boardState[leftDownAttack]) &&
     !attackPiece(
       leftDownAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [leftDownAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [leftDownAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [leftDownAttack]: "m",
+      }));
+    }
   }
   if (
+    rightRightMove <= 8 &&
+    upMove <= 8 &&
     !ownPieces.includes(boardState[rightUpAttack]) &&
     !attackPiece(
       rightUpAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [rightUpAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [rightUpAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [rightUpAttack]: "m",
+      }));
+    }
   }
   if (
+    rightRightMove <= 8 &&
+    downMove >= 1 &&
     !ownPieces.includes(boardState[rightDownAttack]) &&
     !attackPiece(
       rightDownAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [rightDownAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [rightDownAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [rightDownAttack]: "m",
+      }));
+    }
   }
 }
 
@@ -231,7 +286,8 @@ export function showPawnMoves(
   setPossibleMoves,
   setBoardState,
   setSelectedTile,
-  moves
+  moves,
+  show
 ) {
   checkEnPassant(
     tile,
@@ -239,7 +295,8 @@ export function showPawnMoves(
     boardState,
     setPossibleMoves,
     setBoardState,
-    moves
+    moves,
+    show
   );
   setSelectedTile(tile);
   let verticalMove = isWhite ? parseInt(tile[1]) + 1 : parseInt(tile[1]) - 1;
@@ -250,7 +307,9 @@ export function showPawnMoves(
       ...currentPossibleMoves,
       [newTile],
     ]);
-    setBoardState((boardState) => ({ ...boardState, [newTile]: "m" }));
+    if (show) {
+      setBoardState((boardState) => ({ ...boardState, [newTile]: "m" }));
+    }
     if ((isWhite && tile[1] === "2") || (!isWhite && tile[1] === "7")) {
       let newTile = tile[0] + (isWhite ? verticalMove + 1 : verticalMove - 1);
       if (boardState[newTile] === "-") {
@@ -258,14 +317,23 @@ export function showPawnMoves(
           ...currentPossibleMoves,
           [newTile],
         ]);
-        setBoardState((boardState) => ({ ...boardState, [newTile]: "m" }));
+        if (show) {
+          setBoardState((boardState) => ({ ...boardState, [newTile]: "m" }));
+        }
       }
     }
   }
 
   let horizontalMove = parseInt(tile[0]) - 1;
   let leftAttack = horizontalMove.toString() + verticalMove;
-  attackPiece(leftAttack, isWhite, boardState, setPossibleMoves, setBoardState);
+  attackPiece(
+    leftAttack,
+    isWhite,
+    boardState,
+    setPossibleMoves,
+    setBoardState,
+    show
+  );
 
   horizontalMove = parseInt(tile[0]) + 1;
   let rightAttack = horizontalMove.toString() + verticalMove;
@@ -274,7 +342,8 @@ export function showPawnMoves(
     isWhite,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
 }
 
@@ -285,7 +354,8 @@ function checkCastle(
   setBoardState,
   kingMoved,
   qRookMoved,
-  kRookMoved
+  kRookMoved,
+  show
 ) {
   // Where the white pieces are
   let qRook = "11";
@@ -340,10 +410,12 @@ function checkCastle(
         ...currentPossibleMoves,
         [queenSideCastle],
       ]);
-      setBoardState((boardState) => ({
-        ...boardState,
-        [queenSideCastle]: queenCastleType,
-      }));
+      if (show) {
+        setBoardState((boardState) => ({
+          ...boardState,
+          [queenSideCastle]: queenCastleType,
+        }));
+      }
     }
 
     // King Side
@@ -356,10 +428,12 @@ function checkCastle(
         ...currentPossibleMoves,
         [kingSideCastle],
       ]);
-      setBoardState((boardState) => ({
-        ...boardState,
-        [kingSideCastle]: kingCastleType,
-      }));
+      if (show) {
+        setBoardState((boardState) => ({
+          ...boardState,
+          [kingSideCastle]: kingCastleType,
+        }));
+      }
     }
   }
 }
@@ -370,7 +444,8 @@ function checkEnPassant(
   boardState,
   setPossibleMoves,
   setBoardState,
-  moves
+  moves,
+  show
 ) {
   if (isWhite) {
     if (currentTile[1] !== "5") {
@@ -406,10 +481,12 @@ function checkEnPassant(
       ...currentPossibleMoves,
       [leftSide[0] + (parseInt(currentTile[1]) + 1)],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [leftSide[0] + (parseInt(currentTile[1]) + 1)]: take,
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [leftSide[0] + (parseInt(currentTile[1]) + 1)]: take,
+      }));
+    }
   }
 
   if (
@@ -421,10 +498,12 @@ function checkEnPassant(
       ...currentPossibleMoves,
       [rightSide[0] + (parseInt(currentTile[1]) + 1)],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [rightSide[0] + (parseInt(currentTile[1]) + 1)]: take,
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [rightSide[0] + (parseInt(currentTile[1]) + 1)]: take,
+      }));
+    }
   }
 }
 
@@ -433,7 +512,8 @@ function attackPiece(
   isWhite,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   const opponentPieces = isWhite ? blackPieces : whitePieces;
   if (opponentPieces.includes(boardState[attackedTile])) {
@@ -441,10 +521,12 @@ function attackPiece(
       ...currentPossibleMoves,
       [attackedTile],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [attackedTile]: boardState[attackedTile] + "x",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [attackedTile]: boardState[attackedTile] + "x",
+      }));
+    }
   }
   return opponentPieces.includes(boardState[attackedTile]);
 }
@@ -455,7 +537,8 @@ export function showBishopMoves(
   boardState,
   setPossibleMoves,
   setBoardState,
-  setSelectedTile
+  setSelectedTile,
+  show
 ) {
   setSelectedTile(tile);
   const ownPieces = isWhite ? whitePieces : blackPieces;
@@ -466,7 +549,8 @@ export function showBishopMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   downRightMove(
     tile,
@@ -474,7 +558,8 @@ export function showBishopMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   upLeftMove(
     tile,
@@ -482,7 +567,8 @@ export function showBishopMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   downLeftMove(
     tile,
@@ -490,7 +576,8 @@ export function showBishopMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
 }
 
@@ -500,7 +587,8 @@ export function showQueenMoves(
   boardState,
   setPossibleMoves,
   setBoardState,
-  setSelectedTile
+  setSelectedTile,
+  show
 ) {
   setSelectedTile(tile);
   const ownPieces = isWhite ? whitePieces : blackPieces;
@@ -511,16 +599,26 @@ export function showQueenMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
-  upMove(tile, isWhite, ownPieces, boardState, setPossibleMoves, setBoardState);
+  upMove(
+    tile,
+    isWhite,
+    ownPieces,
+    boardState,
+    setPossibleMoves,
+    setBoardState,
+    show
+  );
   rightMove(
     tile,
     isWhite,
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   downMove(
     tile,
@@ -528,7 +626,8 @@ export function showQueenMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   upLeftMove(
     tile,
@@ -536,7 +635,8 @@ export function showQueenMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   upRightMove(
     tile,
@@ -544,7 +644,8 @@ export function showQueenMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   downLeftMove(
     tile,
@@ -552,7 +653,8 @@ export function showQueenMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
   downRightMove(
     tile,
@@ -560,7 +662,8 @@ export function showQueenMoves(
     ownPieces,
     boardState,
     setPossibleMoves,
-    setBoardState
+    setBoardState,
+    show
   );
 }
 
@@ -637,12 +740,13 @@ export function castleKing(
       }));
       setBoardState((boardState) => ({
         ...boardState,
-        [queenSideCastle]: kingCastleType,
+        [queenSideCastle]: kingColor,
       }));
       setBoardState((boardState) => ({
         ...boardState,
         [queenSide3]: rookColor,
       }));
+
       break;
     case "ck":
     case "CK":
@@ -677,7 +781,8 @@ export function showKingMoves(
   setSelectedTile,
   kingMoved,
   qRookMoved,
-  kRookMoved
+  kRookMoved,
+  show
 ) {
   checkCastle(
     isWhite,
@@ -686,7 +791,8 @@ export function showKingMoves(
     setBoardState,
     kingMoved,
     qRookMoved,
-    kRookMoved
+    kRookMoved,
+    show
   );
   setSelectedTile(tile);
   const ownPieces = isWhite ? whitePieces : blackPieces;
@@ -698,164 +804,204 @@ export function showKingMoves(
 
   let upAttack = tile[0] + upMove;
   if (
+    upAttack <= 8 &&
     !ownPieces.includes(boardState[upAttack]) &&
-    !attackPiece(upAttack, isWhite, boardState, setPossibleMoves, setBoardState)
+    !attackPiece(
+      upAttack,
+      isWhite,
+      boardState,
+      setPossibleMoves,
+      setBoardState,
+      show
+    )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [upAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [upAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [upAttack]: "m",
+      }));
+    }
   }
 
   let upLeftAttack = leftMove.toString() + upMove;
   if (
+    upAttack <= 8 &&
+    leftMove >= 1 &&
     !ownPieces.includes(boardState[upLeftAttack]) &&
     !attackPiece(
       upLeftAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [upLeftAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [upLeftAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [upLeftAttack]: "m",
+      }));
+    }
   }
 
   let upRightAttack = rightMove.toString() + upMove;
   if (
+    upAttack <= 8 &&
+    rightMove <= 8 &&
     !ownPieces.includes(boardState[upRightAttack]) &&
     !attackPiece(
       upRightAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [upRightAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [upRightAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [upRightAttack]: "m",
+      }));
+    }
   }
 
   let leftMoveAttack = leftMove + tile[1];
   if (
+    leftMove >= 1 &&
     !ownPieces.includes(boardState[leftMoveAttack]) &&
     !attackPiece(
       leftMoveAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [leftMoveAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [leftMoveAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [leftMoveAttack]: "m",
+      }));
+    }
   }
 
   let rightMoveAttack = rightMove + tile[1];
   if (
+    rightMove <= 8 &&
     !ownPieces.includes(boardState[rightMoveAttack]) &&
     !attackPiece(
       rightMoveAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [rightMoveAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [rightMoveAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [rightMoveAttack]: "m",
+      }));
+    }
   }
 
   let downMoveAttack = tile[0] + downMove;
   if (
+    downMove >= 1 &&
     !ownPieces.includes(boardState[downMoveAttack]) &&
     !attackPiece(
       downMoveAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [downMoveAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [downMoveAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [downMoveAttack]: "m",
+      }));
+    }
   }
 
   let downRightAttack = rightMove.toString() + downMove;
   if (
+    downMove >= 1 &&
     !ownPieces.includes(boardState[downRightAttack]) &&
     !attackPiece(
       downRightAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [downRightAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [downRightAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [downRightAttack]: "m",
+      }));
+    }
   }
 
   let downLeftAttack = leftMove.toString() + downMove;
   if (
+    downMove >= 1 &&
     !ownPieces.includes(boardState[downLeftAttack]) &&
     !attackPiece(
       downLeftAttack,
       isWhite,
       boardState,
       setPossibleMoves,
-      setBoardState
+      setBoardState,
+      show
     )
   ) {
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [downLeftAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [downLeftAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [downLeftAttack]: "m",
+      }));
+    }
   }
 }
 
@@ -865,7 +1011,8 @@ function leftMove(
   ownPieces,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   let leftMove = parseInt(tile[0]) - 1;
   let leftAttack = leftMove + tile[1];
@@ -878,19 +1025,24 @@ function leftMove(
         isWhite,
         boardState,
         setPossibleMoves,
-        setBoardState
+        setBoardState,
+        show
       )
     ) {
       break;
+    }
+
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [currentLeftAtack]: "m",
+      }));
     }
     setPossibleMoves((currentPossibleMoves) => [
       ...currentPossibleMoves,
       [currentLeftAtack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [currentLeftAtack]: "m",
-    }));
+
     leftMove--;
     leftAttack = leftMove + tile[1];
   }
@@ -902,7 +1054,8 @@ function rightMove(
   ownPieces,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   let rightMove = parseInt(tile[0]) + 1;
   let rightAttack = rightMove + tile[1];
@@ -915,7 +1068,8 @@ function rightMove(
         isWhite,
         boardState,
         setPossibleMoves,
-        setBoardState
+        setBoardState,
+        show
       )
     ) {
       break;
@@ -924,10 +1078,12 @@ function rightMove(
       ...currentPossibleMoves,
       [currentRightAtack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [currentRightAtack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [currentRightAtack]: "m",
+      }));
+    }
     rightMove++;
     rightAttack = rightMove + tile[1];
   }
@@ -939,7 +1095,8 @@ function downMove(
   ownPieces,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   let downMove = parseInt(tile[1]) - 1;
   let downAttack = tile[0] + downMove;
@@ -952,7 +1109,8 @@ function downMove(
         isWhite,
         boardState,
         setPossibleMoves,
-        setBoardState
+        setBoardState,
+        show
       )
     ) {
       break;
@@ -961,10 +1119,12 @@ function downMove(
       ...currentPossibleMoves,
       [currentDownAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [currentDownAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [currentDownAttack]: "m",
+      }));
+    }
 
     downMove = downMove - 1;
     downAttack = tile[0] + downMove;
@@ -977,7 +1137,8 @@ function upMove(
   ownPieces,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   let upMove = parseInt(tile[1]) + 1;
   let upAttack = tile[0] + upMove;
@@ -990,7 +1151,8 @@ function upMove(
         isWhite,
         boardState,
         setPossibleMoves,
-        setBoardState
+        setBoardState,
+        show
       )
     ) {
       break;
@@ -999,10 +1161,12 @@ function upMove(
       ...currentPossibleMoves,
       [currentUpAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [currentUpAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [currentUpAttack]: "m",
+      }));
+    }
 
     upMove++;
     upAttack = tile[0] + upMove;
@@ -1015,7 +1179,8 @@ function upRightMove(
   ownPieces,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   let upMove = parseInt(tile[1]) + 1;
   let rightMove = parseInt(tile[0]) + 1;
@@ -1029,7 +1194,8 @@ function upRightMove(
         isWhite,
         boardState,
         setPossibleMoves,
-        setBoardState
+        setBoardState,
+        show
       )
     ) {
       break;
@@ -1038,10 +1204,12 @@ function upRightMove(
       ...currentPossibleMoves,
       [currentUpRightAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [currentUpRightAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [currentUpRightAttack]: "m",
+      }));
+    }
     upMove++;
     rightMove++;
     upRightAttack = rightMove.toString() + upMove;
@@ -1054,7 +1222,8 @@ function downRightMove(
   ownPieces,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   let downMove = parseInt(tile[1]) - 1;
   let rightMove = parseInt(tile[0]) + 1;
@@ -1069,7 +1238,8 @@ function downRightMove(
         isWhite,
         boardState,
         setPossibleMoves,
-        setBoardState
+        setBoardState,
+        show
       )
     ) {
       break;
@@ -1078,10 +1248,12 @@ function downRightMove(
       ...currentPossibleMoves,
       [currentDownRightAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [currentDownRightAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [currentDownRightAttack]: "m",
+      }));
+    }
     downMove = downMove - 1;
     rightMove++;
     downRightAttack = rightMove.toString() + downMove;
@@ -1094,7 +1266,8 @@ function upLeftMove(
   ownPieces,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   let upMove = parseInt(tile[1]) + 1;
   let leftMove = parseInt(tile[0]) - 1;
@@ -1109,7 +1282,8 @@ function upLeftMove(
         isWhite,
         boardState,
         setPossibleMoves,
-        setBoardState
+        setBoardState,
+        show
       )
     ) {
       break;
@@ -1118,10 +1292,12 @@ function upLeftMove(
       ...currentPossibleMoves,
       [currentLeftUpAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [currentLeftUpAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [currentLeftUpAttack]: "m",
+      }));
+    }
     upMove++;
     leftMove = leftMove - 1;
     upLeftAttack = leftMove.toString() + upMove;
@@ -1134,7 +1310,8 @@ function downLeftMove(
   ownPieces,
   boardState,
   setPossibleMoves,
-  setBoardState
+  setBoardState,
+  show
 ) {
   let downMove = parseInt(tile[1]) - 1;
   let leftMove = parseInt(tile[0]) - 1;
@@ -1149,7 +1326,8 @@ function downLeftMove(
         isWhite,
         boardState,
         setPossibleMoves,
-        setBoardState
+        setBoardState,
+        show
       )
     ) {
       break;
@@ -1158,10 +1336,12 @@ function downLeftMove(
       ...currentPossibleMoves,
       [currentDownLeftAttack],
     ]);
-    setBoardState((boardState) => ({
-      ...boardState,
-      [currentDownLeftAttack]: "m",
-    }));
+    if (show) {
+      setBoardState((boardState) => ({
+        ...boardState,
+        [currentDownLeftAttack]: "m",
+      }));
+    }
     downMove = downMove - 1;
     leftMove = leftMove - 1;
     downLeftAttack = leftMove.toString() + downMove;
